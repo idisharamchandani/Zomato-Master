@@ -1,0 +1,45 @@
+version: "3"
+services:
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3080:80"
+    depends_on:
+      - nodeserver
+      - client
+  nodeserver:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      - MONGO_URL=mongodb+srv://abhay_19w333:9904750095@zomatoclone2.ftahz.mongodb.net/zomato?retryWrites=true&w=majority
+      - GOOGLE_CLIENT_ID=281387821340-sqo5rn8srrjqvsfumo6vtk01vk2kp143.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+      - AWS_S3_ACCESS_KEY=AKIAT744OTRVL7OAOSOW
+      - AWS_S3_SECRET_KEY=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
+      - MAILGUN__DOMAIN=sandbox446b8012c2bc45cb8e5be995c5fa84c5.mailgun.org
+      - MAILGUN__API__KEY=b2f98d64c1270ac17001d3ed6e49c97e-2ac825a1-d90786c1
+      - RZR_PAY_ID=rzp_test_l89CFzgqI23dYL
+      - RZR_PAY_SECRET=pdpDl9dN59iNIGwcBpUFPTcX       
+      - NODE_ENV=production
+      - PORT=4000
+
+    ports:
+      - "4000:4000"
+
+  client:
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    ports:
+      - "3000:3000"
